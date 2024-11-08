@@ -24,6 +24,7 @@ export default class CongestionGraphD3Renderer {
     private packetsSent!: Array<Array<any>>;
     private packetsReceived!: Array<Array<any>>;
     private metricUpdates!: Array<Array<any>>;
+    private crUpdates!: Array<Array<any>>;
 
     private isInitialised: boolean = false;
 
@@ -930,6 +931,51 @@ export default class CongestionGraphD3Renderer {
                 this.drawLines(this.mainGraphState.canvasContext!, this.mainGraphState.flowControlLines.stream.map((point) => {
                     return [ this.mainGraphState.sent.xScale!(point[0]), this.mainGraphState.sent.yScale!(point[1]) ];
                 }), "#ff69b4", this.drawCross);
+
+                for (const index in this.mainGraphState.crUpdates.crPhase) {
+                    const timestamp = this.mainGraphState.crUpdates.crPhase[index][0];
+                    const old_phase = this.mainGraphState.crUpdates.crPhase[index][1];
+                    const new_phase = this.mainGraphState.crUpdates.crPhase[index][2];
+
+                    this.drawLines(this.mainGraphState.canvasContext!,
+                        [ [this.mainGraphState.sent.xScale!(timestamp), 0],
+                            [this.mainGraphState.sent.xScale!(timestamp), this.mainGraphState.sent.yScale!(this.mainGraphState.canvasContext!.canvas.height)] ],
+                        "#984800", this.drawCross)
+                    let old_string:string;
+                    if (old_phase == 0) {
+                        old_string = "OBSERVE";
+                    } else if (old_phase == 1) {
+                        old_string = "RECON";
+                    } else if (old_phase == 2) {
+                        old_string = "UNVAL";
+                    } else if (old_phase == 3) {
+                        old_string = "VALIDATING";
+                    } else if (old_phase == 4) {
+                        old_string = "RETREAT";
+                    } else {
+                        old_string = "NORMAL";
+                    }
+                    let new_string:string;
+                    if (new_phase == 0) {
+                        new_string = "OBSERVE";
+                    } else if (new_phase == 1) {
+                        new_string = "RECON";
+                    } else if (new_phase == 2) {
+                        new_string = "UNVAL";
+                    } else if (new_phase == 3) {
+                        new_string = "VALIDATING";
+                    } else if (new_phase == 4) {
+                        new_string = "RETREAT";
+                    } else {
+                        new_string = "NORMAL";
+                    }
+                    this.mainGraphState.canvasContext!.save();
+                    this.mainGraphState.canvasContext!.translate(this.mainGraphState.sent.xScale!(timestamp) + 5, 15);
+                    this.mainGraphState.canvasContext!.rotate(Math.PI / 2);
+                    this.mainGraphState.canvasContext!.fillStyle = "#984800"
+                    this.mainGraphState.canvasContext!.fillText(new_string, 0, 0);
+                    this.mainGraphState.canvasContext!.restore();
+                }
             }
 
             // RTT
@@ -1082,6 +1128,7 @@ export default class CongestionGraphD3Renderer {
         const packetsReceived = this.config.connection!.lookup(qlog.EventCategory.transport, qlog.TransportEventType.packet_received);
         const packetsLost = this.config.connection!.lookup(qlog.EventCategory.recovery, qlog.RecoveryEventType.packet_lost);
         const metricUpdates = this.config.connection!.lookup(qlog.EventCategory.recovery, qlog.RecoveryEventType.metrics_updated);
+        const crUpdates = this.config.connection!.lookup(qlog.EventCategory.recovery, qlog.RecoveryEventType.cr_phase);
         const transportParams = this.config.connection!.lookup(qlog.EventCategory.transport, qlog.TransportEventType.parameters_set);
 
         // these are Map<string, Map<string,Packet>>, 
@@ -1439,6 +1486,15 @@ export default class CongestionGraphD3Renderer {
                 sent.maxRTT = sent.maxRTT < y ? y : sent.maxRTT;
                 this.mainGraphState.metricUpdateLines.lastRTT.push([timestamp, y]);
             }
+        }
+
+        //Iterate over cr phase updated.
+        for (const update of crUpdates) {
+            const parsedUpdate = this.config.connection!.parseEvent(update);
+            const data = parsedUpdate.data;
+            const timestamp = this.transformTime( parsedUpdate.relativeTime );
+
+            this.mainGraphState.crUpdates.crPhase.push([timestamp, data.old, data.new])
         }
 
         // Store these for easy access later so we don't have to do a lookup every redraw

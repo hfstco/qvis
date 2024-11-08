@@ -60,6 +60,10 @@ export class MainGraphState {
         lastRTT: Array<[number, number]>,
     };
 
+    public crUpdates!: {
+        crPhase: Array<[number, number, number]>,
+    }
+
     public flowControlLines!: {
         application: Array<[number, number]>,
         stream: Array<[number, number]>,
@@ -114,6 +118,9 @@ export class MainGraphState {
             smoothedRTT: new Array<[number, number]>(),
             lastRTT: new Array<[number, number]>(),
         };
+        this.crUpdates = {
+            crPhase: new Array<[number, number, number]>(),
+        }
         this.flowControlLines = {
             application: new Array<[number, number]>(),
             stream: new Array<[number, number]>(),

@@ -2,7 +2,7 @@
 // https://github.com/vuejs/vue-cli/issues/1623
 
 module.exports = {
-    baseUrl: './',
+    publicPath: './',
     configureWebpack: {
         devtool: 'source-map'
     }

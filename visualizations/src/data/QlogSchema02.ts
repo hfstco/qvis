@@ -188,6 +188,8 @@ export enum RecoveryEventType {
 
     packet_lost = "packet_lost",
     marked_for_retransmit = "marked_for_retransmit",
+
+    cr_phase = "cr_phase",
 }
 
 // ================================================================== //
