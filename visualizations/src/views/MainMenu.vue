@@ -48,6 +48,9 @@
                 <b-button variant="danger"  href="https://github.com/quiclog/qvis/issues/new?template=bug-report-in-live-version.md&amp;title=Bug+in+live+version" target="_blank">Report issue</b-button>
             </b-col>
         </b-row>
+        <b-row class="warning">
+            This software is developed and maintained by Robin Marx.&nbsp;<b-link href="https://github.com/quiclog/qvis">https://github.com/quiclog/qvis</b-link>
+        </b-row>
     </b-container>
 </template>
 
@@ -67,6 +70,11 @@
 
     #MainMenu .nav-tabs{
         border-bottom: none;
+    }
+
+    #MainMenu .warning {
+        color: #212529;
+        background-color: #dc3545;
     }
 
     #MainMenu .nav-tabs .nav-item {

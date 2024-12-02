@@ -932,6 +932,7 @@ export default class CongestionGraphD3Renderer {
                     return [ this.mainGraphState.sent.xScale!(point[0]), this.mainGraphState.sent.yScale!(point[1]) ];
                 }), "#ff69b4", this.drawCross);
 
+                /* CR phases */
                 for (const index in this.mainGraphState.crPhaseUpdates.events) {
                     const timestamp = this.mainGraphState.crPhaseUpdates.events[index][0];
                     const old_phase = this.mainGraphState.crPhaseUpdates.events[index][1];
@@ -945,6 +946,8 @@ export default class CongestionGraphD3Renderer {
                     const saved_rtt = this.mainGraphState.crPhaseUpdates.events[index][9];
                     const trigger = this.mainGraphState.crPhaseUpdates.events[index][10];
 
+                    /* draw CR phases */
+                    this.mainGraphState.canvasContext!.save();
                     this.drawLines(this.mainGraphState.canvasContext!,
                         [ [this.mainGraphState.sent.xScale!(timestamp), 0],
                             [this.mainGraphState.sent.xScale!(timestamp), this.mainGraphState.sent.yScale!(this.mainGraphState.canvasContext!.canvas.height)] ],
@@ -973,7 +976,6 @@ export default class CongestionGraphD3Renderer {
                         text += " pipesize=" + pipesize;
                         text += " last_unvalidated_packet=" + last_unvalidated_packet;
                     }
-                    this.mainGraphState.canvasContext!.save();
                     this.mainGraphState.canvasContext!.translate(this.mainGraphState.sent.xScale!(timestamp) + 5, 15);
                     this.mainGraphState.canvasContext!.rotate(Math.PI / 2);
                     this.mainGraphState.canvasContext!.font = "12px";
