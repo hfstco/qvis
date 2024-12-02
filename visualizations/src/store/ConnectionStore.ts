@@ -349,7 +349,7 @@ export default class ConnectionStore extends VuexModule {
         this.loadQlogDirectlyFromURL( { url : "standalone_data/draft-01/doublevantage_100ms.qlog", filename: "DEMO_double_vantagepoint.qlog (3.1MB)"} );
         this.loadQlogDirectlyFromURL( { url : "standalone_data/draft-00/quictrace_example_github.qlog", filename: "DEMO_quictrace_example.qlog (3.7MB)"} );
         this.loadQlogDirectlyFromURL( { url : "standalone_data/cr/cr_successful_acknowledged.qlog", filename: "DEMO_cr_successful_acknowledged.qlog (20.2MB)"} );
-        this.loadQlogDirectlyFromURL( { url : "standalone_data/cr/cr_successful_acknowledged.qlog", filename: "DEMO_cr_overshoot.qlog (30.1MB)"} );
+        this.loadQlogDirectlyFromURL( { url : "standalone_data/cr/cr_overshoot.qlog", filename: "DEMO_cr_overshoot.qlog (30.1MB)"} );
 
         // this.loadQlogDirectlyFromURL( { url : "standalone_data/tcp/cdninstagram-com_rachelbrosnahan.json", filename: "DEMO_instagram_rachelbrosnahan (4MB)"} );
         // this.loadQlogDirectlyFromURL( { url : "standalone_data/tcp/wikipedia_Playstation.json", filename: "DEMO_wikipedia_playstation (4MB)"} );
