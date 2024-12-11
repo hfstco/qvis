@@ -60,8 +60,8 @@ export class MainGraphState {
         lastRTT: Array<[number, number]>,
     };
 
-    public crPhaseUpdates!: {
-        events: Array<[number, number, number, number, number, number, number, number, number, number, number]>,
+    public carefulResumePhaseUpdates!: {
+        events: Array<[number, object]>,
     }
 
     public flowControlLines!: {
@@ -118,8 +118,8 @@ export class MainGraphState {
             smoothedRTT: new Array<[number, number]>(),
             lastRTT: new Array<[number, number]>(),
         };
-        this.crPhaseUpdates = {
-            events: new Array<[number, number, number, number, number, number, number, number, number, number, number]>(),
+        this.carefulResumePhaseUpdates = {
+            events: new Array<[number, object]>(),
         }
         this.flowControlLines = {
             application: new Array<[number, number]>(),

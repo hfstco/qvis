@@ -24,7 +24,7 @@ export default class CongestionGraphD3Renderer {
     private packetsSent!: Array<Array<any>>;
     private packetsReceived!: Array<Array<any>>;
     private metricUpdates!: Array<Array<any>>;
-    private crUpdates!: Array<Array<any>>;
+    private crPhaseUpdates!: Array<Array<any>>;
 
     private isInitialised: boolean = false;
 
@@ -933,18 +933,18 @@ export default class CongestionGraphD3Renderer {
                 }), "#ff69b4", this.drawCross);
 
                 /* CR phases */
-                for (const index in this.mainGraphState.crPhaseUpdates.events) {
-                    const timestamp = this.mainGraphState.crPhaseUpdates.events[index][0];
-                    const old_phase = this.mainGraphState.crPhaseUpdates.events[index][1];
-                    const new_phase = this.mainGraphState.crPhaseUpdates.events[index][2];
-                    const pipesize = this.mainGraphState.crPhaseUpdates.events[index][3];
-                    const first_unvalidated_packet = this.mainGraphState.crPhaseUpdates.events[index][4];
-                    const last_unvalidated_packet = this.mainGraphState.crPhaseUpdates.events[index][5];
-                    const congestion_window = this.mainGraphState.crPhaseUpdates.events[index][6];
-                    const ssthresh = this.mainGraphState.crPhaseUpdates.events[index][7];
-                    const saved_congestion_window = this.mainGraphState.crPhaseUpdates.events[index][8];
-                    const saved_rtt = this.mainGraphState.crPhaseUpdates.events[index][9];
-                    const trigger = this.mainGraphState.crPhaseUpdates.events[index][10];
+                for (const index in this.mainGraphState.carefulResumePhaseUpdates.events) {
+                    const timestamp = this.mainGraphState.carefulResumePhaseUpdates.events[index][0];
+                    const old_phase = this.mainGraphState.carefulResumePhaseUpdates.events[index][1]["old_phase"];
+                    const new_phase = this.mainGraphState.carefulResumePhaseUpdates.events[index][1]["new_phase"];
+                    const pipesize = this.mainGraphState.carefulResumePhaseUpdates.events[index][1]["state_data"]["pipesize"];
+                    const first_unvalidated_packet = this.mainGraphState.carefulResumePhaseUpdates.events[index][1]["state_data"]["first_unvalidated_packet"];
+                    const last_unvalidated_packet = this.mainGraphState.carefulResumePhaseUpdates.events[index][1]["state_data"]["last_unvalidated_packet"];
+                    const congestion_window = this.mainGraphState.carefulResumePhaseUpdates.events[index][1]["state_data"]["congestion_window"];
+                    const ssthresh = this.mainGraphState.carefulResumePhaseUpdates.events[index][1]["state_data"]["ssthresh"];
+                    const saved_congestion_window = this.mainGraphState.carefulResumePhaseUpdates.events[index][1]["restored_data"]["saved_congestion_window"];
+                    const saved_rtt = this.mainGraphState.carefulResumePhaseUpdates.events[index][1]["restored_data"]["saved_rtt"];
+                    const trigger = this.mainGraphState.carefulResumePhaseUpdates.events[index][1]["trigger"];
 
                     /* draw CR phases */
                     this.mainGraphState.canvasContext!.save();
@@ -953,20 +953,20 @@ export default class CongestionGraphD3Renderer {
                             [this.mainGraphState.sent.xScale!(timestamp), this.mainGraphState.sent.yScale!(this.mainGraphState.canvasContext!.canvas.height)] ],
                         "#984800", this.drawCross)
                     let text:string;
-                    if (new_phase == 0) {
+                    if (new_phase == "observe") {
                         text = "OBSERVE";
-                    } else if (new_phase == 1) {
+                    } else if (new_phase == "reconnaissance") {
                         text = "RECON";
                         text += " saved_congestion_window=" + saved_congestion_window;
                         text += " saved_rtt=" + saved_rtt;
-                    } else if (new_phase == 2) {
+                    } else if (new_phase == "unval") {
                         text = "UNVAL";
                         text += " congestion_window=" + congestion_window;
                         text += " first_unvalidated_packet=" + first_unvalidated_packet;
-                    } else if (new_phase == 3) {
+                    } else if (new_phase == "validating") {
                         text = "VALIDATING";
                         text += " congestion_window=" + congestion_window;
-                    } else if (new_phase == 4) {
+                    } else if (new_phase == "safe_retreat") {
                         text = "RETREAT";
                         text += " congestion_window=" + congestion_window;
                         text += " pipesize=" + pipesize;
@@ -1135,7 +1135,7 @@ export default class CongestionGraphD3Renderer {
         const packetsReceived = this.config.connection!.lookup(qlog.EventCategory.transport, qlog.TransportEventType.packet_received);
         const packetsLost = this.config.connection!.lookup(qlog.EventCategory.recovery, qlog.RecoveryEventType.packet_lost);
         const metricUpdates = this.config.connection!.lookup(qlog.EventCategory.recovery, qlog.RecoveryEventType.metrics_updated);
-        const crPhaseUpdates = this.config.connection!.lookup(qlog.EventCategory.recovery, qlog.RecoveryEventType.cr_phase);
+        const carefulResumePhaseUpdates = this.config.connection!.lookup(qlog.EventCategory.recovery, qlog.RecoveryEventType.careful_resume_phase_update);
         const transportParams = this.config.connection!.lookup(qlog.EventCategory.transport, qlog.TransportEventType.parameters_set);
 
         // these are Map<string, Map<string,Packet>>, 
@@ -1496,12 +1496,12 @@ export default class CongestionGraphD3Renderer {
         }
 
         //Iterate over cr phase updated.
-        for (const update of crPhaseUpdates) {
+        for (const update of carefulResumePhaseUpdates) {
             const parsedUpdate = this.config.connection!.parseEvent(update);
             const data = parsedUpdate.data;
             const timestamp = this.transformTime( parsedUpdate.relativeTime );
 
-            this.mainGraphState.crPhaseUpdates.events.push([timestamp, data.old_phase, data.new_phase, data.pipesize, data.first_unvalidated_packet, data.last_unvalidated_packet, data.congestion_window, data.ssthresh, data.saved_congestion_window, data.saved_rtt, data.trigger])
+            this.mainGraphState.carefulResumePhaseUpdates.events.push([timestamp, data])
         }
 
         // Store these for easy access later so we don't have to do a lookup every redraw
