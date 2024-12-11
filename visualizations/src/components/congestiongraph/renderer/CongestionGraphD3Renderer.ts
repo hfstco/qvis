@@ -24,7 +24,7 @@ export default class CongestionGraphD3Renderer {
     private packetsSent!: Array<Array<any>>;
     private packetsReceived!: Array<Array<any>>;
     private metricUpdates!: Array<Array<any>>;
-    private crPhaseUpdates!: Array<Array<any>>;
+    private carefulResumePhaseUpdates!: Array<Array<any>>;
 
     private isInitialised: boolean = false;
 

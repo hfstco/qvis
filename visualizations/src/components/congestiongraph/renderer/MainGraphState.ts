@@ -61,7 +61,7 @@ export class MainGraphState {
     };
 
     public carefulResumePhaseUpdates!: {
-        events: Array<[number, object]>,
+        events: Array<[number, any]>,
     }
 
     public flowControlLines!: {
