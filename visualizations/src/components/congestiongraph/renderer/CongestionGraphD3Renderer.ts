@@ -959,7 +959,7 @@ export default class CongestionGraphD3Renderer {
                         text = "RECON";
                         text += " saved_congestion_window=" + saved_congestion_window;
                         text += " saved_rtt=" + saved_rtt;
-                    } else if (new_phase == "unval") {
+                    } else if (new_phase == "unvalidated") {
                         text = "UNVAL";
                         text += " congestion_window=" + congestion_window;
                         text += " first_unvalidated_packet=" + first_unvalidated_packet;
