@@ -953,28 +953,28 @@ export default class CongestionGraphD3Renderer {
                             [this.mainGraphState.sent.xScale!(timestamp), this.mainGraphState.sent.yScale!(this.mainGraphState.canvasContext!.canvas.height)] ],
                         "#984800", this.drawCross)
                     let text:string;
-                    if (new_phase == "observe") {
-                        text = "OBSERVE";
+                    if (new_phase == "normal") {
+                        text = "NORMAL";
+                        text += " congestion_window=" + congestion_window;
+                        text += " pipesize=" + pipesize;
+                        text += " last_unvalidated_packet=" + last_unvalidated_packet;
                     } else if (new_phase == "reconnaissance") {
-                        text = "RECON";
+                        text = "RECONNAISSANCE";
                         text += " saved_congestion_window=" + saved_congestion_window;
                         text += " saved_rtt=" + saved_rtt;
                     } else if (new_phase == "unvalidated") {
-                        text = "UNVAL";
+                        text = "UNVALIDATED";
                         text += " congestion_window=" + congestion_window;
                         text += " first_unvalidated_packet=" + first_unvalidated_packet;
                     } else if (new_phase == "validating") {
                         text = "VALIDATING";
                         text += " congestion_window=" + congestion_window;
                     } else if (new_phase == "safe_retreat") {
-                        text = "RETREAT";
+                        text = "SAFE RETREAT";
                         text += " congestion_window=" + congestion_window;
                         text += " pipesize=" + pipesize;
                     } else {
-                        text = "NORMAL";
-                        text += " congestion_window=" + congestion_window;
-                        text += " pipesize=" + pipesize;
-                        text += " last_unvalidated_packet=" + last_unvalidated_packet;
+                        text = "UNDEFINED";
                     }
                     this.mainGraphState.canvasContext!.translate(this.mainGraphState.sent.xScale!(timestamp) + 5, 15);
                     this.mainGraphState.canvasContext!.rotate(Math.PI / 2);
