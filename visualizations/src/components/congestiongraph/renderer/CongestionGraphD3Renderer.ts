@@ -976,11 +976,14 @@ export default class CongestionGraphD3Renderer {
                     } else {
                         text = "UNDEFINED";
                     }
+                    let trigger_text:string;
+                    trigger_text = "trigger=" + trigger;
                     this.mainGraphState.canvasContext!.translate(this.mainGraphState.sent.xScale!(timestamp) + 5, 15);
                     this.mainGraphState.canvasContext!.rotate(Math.PI / 2);
                     this.mainGraphState.canvasContext!.font = "12px";
                     this.mainGraphState.canvasContext!.fillStyle = "#984800"
                     this.mainGraphState.canvasContext!.fillText(text, 0, 0);
+                    this.mainGraphState.canvasContext!.fillText(trigger_text, 0, 16);
                     this.mainGraphState.canvasContext!.restore();
                 }
             }
