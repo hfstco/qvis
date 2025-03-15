@@ -933,18 +933,21 @@ export default class CongestionGraphD3Renderer {
                 }), "#ff69b4", this.drawCross);
 
                 /* CR phases */
-                for (const index in this.mainGraphState.carefulResumePhaseUpdates.events) {
-                    const timestamp = this.mainGraphState.carefulResumePhaseUpdates.events[index][0];
-                    const old_phase = this.mainGraphState.carefulResumePhaseUpdates.events[index][1]["old_phase"];
-                    const new_phase = this.mainGraphState.carefulResumePhaseUpdates.events[index][1]["new_phase"];
-                    const pipesize = this.mainGraphState.carefulResumePhaseUpdates.events[index][1]["state_data"]["pipesize"];
-                    const first_unvalidated_packet = this.mainGraphState.carefulResumePhaseUpdates.events[index][1]["state_data"]["first_unvalidated_packet"];
-                    const last_unvalidated_packet = this.mainGraphState.carefulResumePhaseUpdates.events[index][1]["state_data"]["last_unvalidated_packet"];
-                    const congestion_window = this.mainGraphState.carefulResumePhaseUpdates.events[index][1]["state_data"]["congestion_window"];
-                    const ssthresh = this.mainGraphState.carefulResumePhaseUpdates.events[index][1]["state_data"]["ssthresh"];
-                    const saved_congestion_window = this.mainGraphState.carefulResumePhaseUpdates.events[index][1]["restored_data"]["saved_congestion_window"];
-                    const saved_rtt = this.mainGraphState.carefulResumePhaseUpdates.events[index][1]["restored_data"]["saved_rtt"];
-                    const trigger = this.mainGraphState.carefulResumePhaseUpdates.events[index][1]["trigger"];
+                for (const event of this.mainGraphState.carefulResumePhaseUpdates.events) {
+                    /* tslint:disable:no-string-literal */
+                    const timestamp = event[0];
+                    const quic_careful_resume_phase_updated = event[1];
+                    const old_phase = quic_careful_resume_phase_updated["old_phase"];
+                    const new_phase = quic_careful_resume_phase_updated["new_phase"];
+                    const pipesize = quic_careful_resume_phase_updated["state_data"]["pipesize"];
+                    const first_unvalidated_packet = quic_careful_resume_phase_updated["state_data"]["first_unvalidated_packet"];
+                    const last_unvalidated_packet = quic_careful_resume_phase_updated["state_data"]["last_unvalidated_packet"];
+                    const congestion_window = quic_careful_resume_phase_updated["state_data"]["congestion_window"];
+                    const ssthresh = quic_careful_resume_phase_updated["state_data"]["ssthresh"];
+                    const saved_congestion_window = quic_careful_resume_phase_updated["restored_data"]["saved_congestion_window"];
+                    const saved_rtt = quic_careful_resume_phase_updated["restored_data"]["saved_rtt"];
+                    const trigger = quic_careful_resume_phase_updated["trigger"];
+                    /* tslint:enable:no-string-literal */
 
                     /* draw CR phases */
                     this.mainGraphState.canvasContext!.save();
@@ -953,23 +956,23 @@ export default class CongestionGraphD3Renderer {
                             [this.mainGraphState.sent.xScale!(timestamp), this.mainGraphState.sent.yScale!(this.mainGraphState.canvasContext!.canvas.height)] ],
                         "#984800", this.drawCross)
                     let text:string;
-                    if (new_phase == "normal") {
+                    if (new_phase === "normal") {
                         text = "NORMAL";
                         text += " congestion_window=" + congestion_window;
                         text += " pipesize=" + pipesize;
                         text += " last_unvalidated_packet=" + last_unvalidated_packet;
-                    } else if (new_phase == "reconnaissance") {
+                    } else if (new_phase === "reconnaissance") {
                         text = "RECONNAISSANCE";
                         text += " saved_congestion_window=" + saved_congestion_window;
                         text += " saved_rtt=" + saved_rtt;
-                    } else if (new_phase == "unvalidated") {
+                    } else if (new_phase === "unvalidated") {
                         text = "UNVALIDATED";
                         text += " congestion_window=" + congestion_window;
                         text += " first_unvalidated_packet=" + first_unvalidated_packet;
-                    } else if (new_phase == "validating") {
+                    } else if (new_phase === "validating") {
                         text = "VALIDATING";
                         text += " congestion_window=" + congestion_window;
-                    } else if (new_phase == "safe_retreat") {
+                    } else if (new_phase === "safe_retreat") {
                         text = "SAFE RETREAT";
                         text += " congestion_window=" + congestion_window;
                         text += " pipesize=" + pipesize;
