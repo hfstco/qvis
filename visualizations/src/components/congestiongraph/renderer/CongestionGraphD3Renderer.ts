@@ -937,8 +937,8 @@ export default class CongestionGraphD3Renderer {
                     /* tslint:disable:no-string-literal */
                     const timestamp = event[0];
                     const quic_careful_resume_phase_updated = event[1];
-                    const old_phase = quic_careful_resume_phase_updated["old_phase"];
-                    const new_phase = quic_careful_resume_phase_updated["new_phase"];
+                    const old_phase = quic_careful_resume_phase_updated["old"];
+                    const new_phase = quic_careful_resume_phase_updated["new"];
                     const pipesize = quic_careful_resume_phase_updated["state_data"]["pipesize"];
                     const first_unvalidated_packet = quic_careful_resume_phase_updated["state_data"]["first_unvalidated_packet"];
                     const last_unvalidated_packet = quic_careful_resume_phase_updated["state_data"]["last_unvalidated_packet"];
@@ -959,8 +959,7 @@ export default class CongestionGraphD3Renderer {
                     if (new_phase === "normal") {
                         text = "NORMAL";
                         text += " congestion_window=" + congestion_window;
-                        text += " pipesize=" + pipesize;
-                        text += " last_unvalidated_packet=" + last_unvalidated_packet;
+                        text += " ssthresh=" + ssthresh;
                     } else if (new_phase === "reconnaissance") {
                         text = "RECONNAISSANCE";
                         text += " saved_congestion_window=" + saved_congestion_window;
@@ -972,6 +971,7 @@ export default class CongestionGraphD3Renderer {
                     } else if (new_phase === "validating") {
                         text = "VALIDATING";
                         text += " congestion_window=" + congestion_window;
+                        text += " last_unvalidated_packet=" + last_unvalidated_packet;
                     } else if (new_phase === "safe_retreat") {
                         text = "SAFE RETREAT";
                         text += " congestion_window=" + congestion_window;
