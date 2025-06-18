@@ -1,3 +1,5 @@
+This version of qvis supporting Careful Resume is available on https://qvis.hfst.co/.
+
 # qvis
 
 A set of QUIC and HTTP/3 visualization tools. 
